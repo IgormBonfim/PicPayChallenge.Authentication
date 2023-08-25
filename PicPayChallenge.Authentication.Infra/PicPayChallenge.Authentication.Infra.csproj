@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PicPayChallenge.Authentication.DataTransfer\PicPayChallenge.Authentication.DataTransfer.csproj" />
     <ProjectReference Include="..\PicPayChallenge.Authentication.Domain\PicPayChallenge.Authentication.Domain.csproj" />
     <ProjectReference Include="..\PicPayChallenge.Common\PicPayChallenge.Common.csproj" />
   </ItemGroup>
