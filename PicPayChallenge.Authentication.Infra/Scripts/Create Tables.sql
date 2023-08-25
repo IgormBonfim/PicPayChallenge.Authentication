@@ -1,0 +1,15 @@
+CREATE SCHEMA IF NOT EXISTS PicPayChallengeAuth;
+
+USE PicPayChallengeAuth;
+
+CREATE TABLE IF NOT EXISTS User(
+	UserId INT AUTO_INCREMENT NOT NULL,
+    FullName VARCHAR(100) NOT NULL,
+    DocumentNumber VARCHAR(14) UNIQUE NOT NULL,
+    Email VARCHAR(100) UNIQUE NOT NULL,
+    UserType INT NOT NULL,
+    CreatedAt DATETIME NOT NULL,
+    UpdatedAt DATETIME NULL,
+    Password VARCHAR(100) NOT NULL,
+    PRIMARY KEY (UserId)
+);

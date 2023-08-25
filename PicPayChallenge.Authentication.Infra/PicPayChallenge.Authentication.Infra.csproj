@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentNHibernate" Version="3.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PicPayChallenge.Authentication.Domain\PicPayChallenge.Authentication.Domain.csproj" />
+    <ProjectReference Include="..\PicPayChallenge.Common\PicPayChallenge.Common.csproj" />
+  </ItemGroup>
+
+</Project>
