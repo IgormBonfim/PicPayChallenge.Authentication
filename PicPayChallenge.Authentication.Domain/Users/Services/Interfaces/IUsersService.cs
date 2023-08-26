@@ -6,7 +6,7 @@ namespace PicPayChallenge.Authentication.Domain.Users.Services.Interfaces
     public interface IUsersService
     {
         User Instance(UserInstanceCommand command);
-        void RegisterUser(User user);
+        User RegisterUser(User user);
         User Validate(int userId);
     }
 }

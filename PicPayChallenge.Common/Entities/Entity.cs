@@ -22,6 +22,7 @@ namespace PicPayChallenge.Common.Entities
         {
             if (id <= 0)
                 throw new BadRequestException("Id must have be a positive number");
+            Id = id;
         }
     }
 }

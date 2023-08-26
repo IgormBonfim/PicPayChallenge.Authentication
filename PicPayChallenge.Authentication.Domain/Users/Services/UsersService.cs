@@ -21,7 +21,7 @@ namespace PicPayChallenge.Payment.Domain.Users.Services
             return new User(command.FullName, command.DocumentNumber, command.Email, command.Password, command.UserType);
         }
 
-        public void RegisterUser(User user)
+        public User RegisterUser(User user)
         {
             var userQuery = usersRepository.Query();
 
@@ -35,7 +35,7 @@ namespace PicPayChallenge.Payment.Domain.Users.Services
             if (userDocument.IsNotNull())
                 throw new BusinessRuleException("The user only can have one account per document number.");
 
-            usersRepository.Insert(user);
+            return usersRepository.Insert(user);
         }
 
         public User Validate(int userId)

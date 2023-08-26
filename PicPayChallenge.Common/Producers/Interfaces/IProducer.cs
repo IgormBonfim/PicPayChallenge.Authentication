@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Confluent.Kafka;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace PicPayChallenge.Common.Producers.Interfaces
 {
     public interface IProducer<T> where T : class
     {
-        T sendMessage(T fact);
+        Task<DeliveryResult<string, string>> sendMessage(T fact);
     }
 }

@@ -21,7 +21,7 @@ namespace PicPayChallenge.Common.Producers
             server = configuration.GetSection("Kafka:Url").Value!;
             this.topic = topic;
         }
-        public T sendMessage(T fact)
+        public async Task<DeliveryResult<string, string>> sendMessage(T fact)
         {
             Message<string, string> message = new Message<string, string>
             {
@@ -36,10 +36,9 @@ namespace PicPayChallenge.Common.Producers
 
             using (var producer = new ProducerBuilder<string, string>(configs).Build())
             {
-                var result = producer.ProduceAsync(topic, message);
+                var result = await producer.ProduceAsync(topic, message);
+                return result;
             }
-
-            return fact;
         }
     }
 }
