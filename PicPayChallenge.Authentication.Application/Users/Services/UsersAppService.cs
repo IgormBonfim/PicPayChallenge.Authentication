@@ -2,6 +2,7 @@
 using PicPayChallenge.Authentication.Application.Users.Services.Interfaces;
 using PicPayChallenge.Authentication.DataTransfer.Users.Facts;
 using PicPayChallenge.Authentication.DataTransfer.Users.Requests;
+using PicPayChallenge.Authentication.DataTransfer.Users.Responses;
 using PicPayChallenge.Authentication.Domain.Users.Entities;
 using PicPayChallenge.Authentication.Domain.Users.Producers;
 using PicPayChallenge.Authentication.Domain.Users.Services.Commands;
@@ -22,9 +23,16 @@ namespace PicPayChallenge.Authentication.Application.Users.Services
             this.mapper = mapper;
         }
 
-        public void AuthUser(UserAuthRequest request)
+        public UserAuthResponse AuthUser(UserAuthRequest request)
         {
-            throw new NotImplementedException();
+            UserAuthCommand command = mapper.Map<UserAuthCommand>(request);
+            User user = userService.AuthUser(command);
+
+            UserAuthResponse response = mapper.Map<UserAuthResponse>(user);
+
+            response.Token = userService.GenerateToken(user);
+
+            return response;
         }
 
         public void RegisterUser(UserRegisterRequest request)

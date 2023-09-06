@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PicPayChallenge.Authentication.Application.Users.Services.Interfaces;
 using PicPayChallenge.Authentication.DataTransfer.Users.Requests;
+using PicPayChallenge.Authentication.DataTransfer.Users.Responses;
 
 namespace PicPayChallenge.Authentication.API.Controllers.Users
 {
@@ -23,10 +24,10 @@ namespace PicPayChallenge.Authentication.API.Controllers.Users
         }
 
         [HttpPost("auth")]
-        public IActionResult AuthUser([FromBody] UserAuthRequest request)
+        public ActionResult<UserAuthResponse> AuthUser([FromBody] UserAuthRequest request)
         {
-            usersAppService.AuthUser(request);
-            return Ok();
+            var response = usersAppService.AuthUser(request);
+            return Ok(response);
         }
     }
 }

@@ -7,6 +7,7 @@ using PicPayChallenge.Authentication.Application.Users.Profiles;
 using PicPayChallenge.Authentication.Application.Users.Services;
 using PicPayChallenge.Authentication.Infra.Users.Mappings;
 using PicPayChallenge.Authentication.Infra.Users.Repositories;
+using PicPayChallenge.Common.Extensions;
 using PicPayChallenge.Common.Filters;
 using PicPayChallenge.Common.Profiles;
 using PicPayChallenge.Payment.Domain.Users.Services;
@@ -38,6 +39,8 @@ namespace PicPayChallenge.Authentication.Ioc
             {
                 optios.Filters.Add(typeof(ExceptionFilter));
             });
+
+            services.ConfigureAuthentication(configuration);
 
             services.Scan(scan => scan.FromAssemblyOf<UsersAppService>().AddClasses().AsImplementedInterfaces().WithScopedLifetime());
             services.Scan(scan => scan.FromAssemblyOf<UsersService>().AddClasses().AsImplementedInterfaces().WithScopedLifetime());

@@ -1,10 +1,11 @@
 ﻿using PicPayChallenge.Authentication.DataTransfer.Users.Requests;
+using PicPayChallenge.Authentication.DataTransfer.Users.Responses;
 
 namespace PicPayChallenge.Authentication.Application.Users.Services.Interfaces
 {
     public interface IUsersAppService
     {
         void RegisterUser(UserRegisterRequest request);
-        void AuthUser(UserAuthRequest request);
+        UserAuthResponse AuthUser(UserAuthRequest request);
     }
 }

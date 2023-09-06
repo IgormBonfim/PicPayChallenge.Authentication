@@ -1,19 +1,45 @@
-﻿using PicPayChallenge.Authentication.Domain.Users.Entities;
+﻿using Microsoft.Extensions.Options;
+using PicPayChallenge.Authentication.Domain.Users.Entities;
 using PicPayChallenge.Authentication.Domain.Users.Repositories;
 using PicPayChallenge.Authentication.Domain.Users.Services.Commands;
 using PicPayChallenge.Authentication.Domain.Users.Services.Interfaces;
 using PicPayChallenge.Common.Exceptions;
+using PicPayChallenge.Common.Tokens;
 using PicPayChallenge.Common.Utils;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace PicPayChallenge.Payment.Domain.Users.Services
 {
     public class UsersService : IUsersService
     {
         private readonly IUsersRepository usersRepository;
+        private readonly TokenOptions tokenOptions;
 
-        public UsersService(IUsersRepository usersRepository)
+        public UsersService(IUsersRepository usersRepository, IOptions<TokenOptions> tokenOptions)
         {
             this.usersRepository = usersRepository;
+            this.tokenOptions = tokenOptions.Value;
+        }
+
+        public User AuthUser(UserAuthCommand command)
+        {
+            if (!EmailUtil.IsValid(command.Email))
+                throw new BadRequestException("Email is not valid");
+
+            User? user = usersRepository.Query()
+                .Where(user => user.Email.ToUpper() == command.Email.ToUpper())
+                .FirstOrDefault();
+
+            if (user.IsNull())
+                throw new NotFoundException("Email not found");
+
+            bool loged = PasswordUtil.ComparePassword(user!.Password, command.Password);
+
+            if (!loged)
+                throw new BadRequestException("Incorrect password");
+
+            return user;
         }
 
         public User Instance(UserInstanceCommand command)
@@ -38,14 +64,26 @@ namespace PicPayChallenge.Payment.Domain.Users.Services
             return usersRepository.Insert(user);
         }
 
-        public User Validate(int userId)
+        public string GenerateToken(User user)
         {
-            User user = usersRepository.Get(userId);
+            DateTime dataExpiracao = DateTime.Now.AddHours(tokenOptions.Expiration);
 
-            if (user.IsNull())
-                throw new NotFoundException("User not found");
+            IList<Claim> tokenClaims = new List<Claim> 
+            {
+                new Claim("Email", user.Email),
+                new Claim("UserId", user.Id.ToString()),
+            };
 
-            return user;
+            JwtSecurityToken jwt = new JwtSecurityToken(
+                issuer: tokenOptions.Issuer,
+                audience: tokenOptions.Audience,
+                claims: tokenClaims,
+                notBefore: DateTime.Now,
+                expires: dataExpiracao,
+                signingCredentials: tokenOptions.SigningCredentials
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
     }
 }
