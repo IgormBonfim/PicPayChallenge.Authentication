@@ -1,0 +1,26 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!define ICONURL https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/v2.4.0
+!includeurl ICONURL/devicons2/dotnetcore.puml
+!includeurl ICONURL/devicons2/mysql.puml
+
+SHOW_PERSON_PORTRAIT()
+LAYOUT_LEFT_RIGHT()
+AddRelTag("async", $lineStyle = DashedLine())
+
+Person(Usuario, "Usúario do aplicativo")
+
+System_Boundary(PicPayChallenge, "Sistema de pagamentos") {
+    Container(AuthApi, "API de Autenticação", "C# .Net", "Sistema que recebe a solicitação de cadastro de usúarios", $sprite="dotnetcore")
+    ContainerQueue(Kafka, "Tópico UserCreated", "Kafka", "Dados do Usúario criado")
+    Container(PaymentConsumer, "Consumer de Usúarios", "C# .Net", "Cadastra usúario no banco de pagamentos", $sprite="dotnetcore")
+    ContainerDb(MySqlAuth, "Banco de Usúarios", "MySQL", "Armazena informações de usúarios no schema PicPayChallengeAuth", $sprite="mysql")
+    ContainerDb(MySqlPayment, "Banco de Pagametos", "MySQL", "Armazena informações de pagamentos no schema PicPayChallengePayment", $sprite="mysql")
+
+    Rel(Usuario,AuthApi,"Realiza solicitação de cadastro de usúario para", "HTTPS/JSON")
+    Rel(AuthApi,MySqlAuth,"Insere na tabela de Usuario no", "MySQLProtocol")
+    Rel(AuthApi,Kafka,"Envia dados do usúario criado para", "JSON", $tags="async")
+    Rel(PaymentConsumer,Kafka,"Consome dados do usúario criado do", "JSON", $tags="async")
+    Rel(PaymentConsumer,MySqlPayment,"Insere na tabela de Usuarios no", "MySQLProtocol")
+}
+@enduml
