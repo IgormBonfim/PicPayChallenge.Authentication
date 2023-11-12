@@ -31,13 +31,15 @@ namespace PicPayChallenge.Payment.Domain.Users.Services
                 .Where(user => user.Email.ToUpper() == command.Email.ToUpper())
                 .FirstOrDefault();
 
+            string message = "Email or Password incorrect";
+
             if (user.IsNull())
-                throw new NotFoundException("Email not found");
+                throw new NotFoundException(message);
 
             bool loged = PasswordUtil.ComparePassword(user!.Password, command.Password);
 
             if (!loged)
-                throw new BadRequestException("Incorrect password");
+                throw new BadRequestException(message);
 
             return user;
         }
@@ -84,6 +86,16 @@ namespace PicPayChallenge.Payment.Domain.Users.Services
             );
 
             return new JwtSecurityTokenHandler().WriteToken(jwt);
+        }
+
+        public User Validate(int id)
+        {
+            User user = usersRepository.Get(id);
+
+            if (user.IsNull())
+                throw new NotFoundException("User not found");
+
+            return user;
         }
     }
 }

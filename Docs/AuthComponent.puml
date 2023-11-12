@@ -1,0 +1,32 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!define ICONURL https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/v2.4.0
+!includeurl ICONURL/devicons2/dotnetcore.puml
+!includeurl ICONURL/devicons2/mysql.puml
+!includeurl ICONURL/devicons2/flutter.puml
+!includeurl ICONURL/devicons/angular.puml
+
+SHOW_PERSON_PORTRAIT()
+LAYOUT_LEFT_RIGHT()
+AddRelTag("async", $lineStyle = DashedLine())
+
+Container(Spa, "Single Page Application", "Angular TypeScript", "Provides all of the PicPayChallenge functionality to customers via their web browser.", $sprite="angular")
+Container(Mobile, "Mobile App", "Flutter", "Provides all of the PicPayChallenge functionality to customers via their mobile device.", $sprite="flutter")
+
+ContainerQueue(Kafka, "UserCreated Topic", "Kafka", "userCreated data")
+ContainerDb(MySqlAuth, "User Database", "MySQL", "User Table in schema PicPayChallengeAuth", $sprite="mysql")
+
+System_Boundary(AuthApi, "Authentication API") {
+    Container(UserController, "Users Controller", "C# .Net", "Allow users to register and login in PicPayChallenge System", $sprite="dotnetcore")
+    Container(UserService, "Users Service", "C# .Net", "All of the business rules and credentials validators of users", $sprite="dotnetcore")
+}
+
+Rel(Spa,UserController,"Make API calls to", "HTTPS/JSON")
+Rel(Mobile,UserController,"Make API calls to", "HTTPS/JSON")
+
+Rel(UserController,UserService,"Uses")
+Rel(UserService,MySqlAuth,"Read/Write to", "NHibernate")
+
+Rel(UserService,Kafka,"Produces userCreated data to", "JSON", $tags="async")
+
+@enduml

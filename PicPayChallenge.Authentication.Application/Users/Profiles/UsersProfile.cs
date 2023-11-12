@@ -14,7 +14,7 @@ namespace PicPayChallenge.Authentication.Application.Users.Profiles
             CreateMap<UserRegisterRequest, UserInstanceCommand>();
             CreateMap<UserAuthRequest, UserAuthCommand>();
             CreateMap<User, UserCreatedFact>();
-            CreateMap<User, UserAuthResponse>();
+            CreateMap<User, UserResponse>();
         }
     }
 }

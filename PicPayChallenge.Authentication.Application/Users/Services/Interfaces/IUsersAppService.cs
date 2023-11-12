@@ -7,5 +7,6 @@ namespace PicPayChallenge.Authentication.Application.Users.Services.Interfaces
     {
         void RegisterUser(UserRegisterRequest request);
         UserAuthResponse AuthUser(UserAuthRequest request);
+        UserResponse GetUser(int id);
     }
 }

@@ -8,6 +8,7 @@ namespace PicPayChallenge.Authentication.Domain.Users.Services.Interfaces
         User Instance(UserInstanceCommand command);
         User RegisterUser(User user);
         User AuthUser(UserAuthCommand command);
+        User Validate(int id);
         string GenerateToken(User user);
     }
 }

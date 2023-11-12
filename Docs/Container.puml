@@ -1,0 +1,49 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!define ICONURL https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/v2.4.0
+!includeurl ICONURL/devicons2/dotnetcore.puml
+!includeurl ICONURL/devicons2/mysql.puml
+!includeurl ICONURL/devicons2/flutter.puml
+!includeurl ICONURL/devicons/angular.puml
+!includeurl ICONURL/material/web.puml
+
+SHOW_PERSON_PORTRAIT()
+LAYOUT_LEFT_RIGHT()
+AddRelTag("async", $lineStyle = DashedLine())
+
+Person(Customer, "Customer", "PicPayChallenge customer")
+
+System_Ext(PagSeguroAPI, "PagSeguro API", "Payment Gateway")
+System_Boundary(PicPayChallenge, "PicPay Challenge System") {
+    Container(WebApp, "Web Application", "Browser", "Delivers the static content and the Single Page Application", $sprite="web")
+    Container(Spa, "Single Page Application", "Angular TypeScript", "Provides all of the PicPayChallenge functionality to customers via their web browser.", $sprite="angular")
+    Container(Mobile, "Mobile App", "Flutter", "Provides all of the PicPayChallenge functionality to customers via their mobile device.", $sprite="flutter")
+    Container(AuthApi, "Authentication API", "C# .Net", "Provides PicPayChallenge register and login functionalities via HTTPS/JSON API", $sprite="dotnetcore")
+    Container(PaymentApi, "Payment API", "C# .Net", "Provides all of the PicPayChallenge Payments and Transactions functionalities via HTTPS/JSON API", $sprite="dotnetcore")
+    Container(PaymentConsumer, "Payment Consumer", "C# .Net", "Consumes topic userCreated inserting user data in Payment Database", $sprite="dotnetcore")
+    Container(EmailConsumer, "Email Consumer", "C# .Net", "Consumes topic sendEmail sending emails", $sprite="dotnetcore")
+    ContainerDb(AuthDatabase, "Authentication Database", "MySQL", "Stores user registration information and hashed authentication credentials.", $sprite="mysql")
+    ContainerDb(PaymentDatabase, "Payment Database", "MySQL", "Stores user, balance, transactions, and payments information", $sprite="mysql")
+    ContainerQueue(Broker, "Broker", "Kafka", "Broker with topics")
+
+    Rel(Customer,WebApp,"Visits using", "HTTPS")
+    Rel(Customer,Spa,"Register and login, view account balance, make and view transactions using")
+    Rel(Customer,Mobile,"Register and login, view account balance, make and view transactions using")
+    Rel(WebApp,Spa,"Delivers to the customer's web browser")
+    Rel(Spa,AuthApi,"Makes API calls to", "HTTPS/JSON")
+    Rel(Spa,PaymentApi,"Makes API calls to", "HTTPS/JSON")
+    Rel(Mobile,AuthApi,"Makes API calls to", "HTTPS/JSON")
+    Rel(Mobile,PaymentApi,"Makes API calls to", "HTTPS/JSON")
+    Rel(AuthApi,AuthDatabase,"Read from and writes to", "ODBC")
+    Rel(PaymentApi,PaymentDatabase,"Read from and writes to", "ODBC")
+    Rel(PaymentApi,Broker,"Produces to", "ODBC", $tags="async")
+    Rel(PaymentConsumer,PaymentDatabase,"Read from and writes to", "ODBC")
+    Rel(PaymentConsumer,Broker,"Consumes from", "JSON", $tags="async")
+    Rel(AuthApi,Broker,"Produces to", "JSON", $tags="async")
+    Rel(EmailConsumer,Broker,"Consumes from", "JSON", $tags="async")
+    Rel(EmailConsumer,Customer,"Send e-mails to", "SMTP", $tags="async")
+}
+Rel(PaymentApi,PagSeguroAPI,"Makes API calls to", "HTTPS/JSON")
+
+
+@enduml
