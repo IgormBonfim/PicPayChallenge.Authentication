@@ -28,11 +28,18 @@ namespace PicPayChallenge.Authentication.Application.Users.Services
             UserAuthCommand command = mapper.Map<UserAuthCommand>(request);
             User user = userService.AuthUser(command);
 
-            UserAuthResponse response = mapper.Map<UserAuthResponse>(user);
+            return new UserAuthResponse
+            {
+                Token = userService.GenerateToken(user),
+                User = mapper.Map<UserResponse>(user)
+            };
+        }
 
-            response.Token = userService.GenerateToken(user);
+        public UserResponse GetUser(int id)
+        {
+            User user = userService.Validate(id);
 
-            return response;
+            return mapper.Map<UserResponse>(user);
         }
 
         public void RegisterUser(UserRegisterRequest request)
