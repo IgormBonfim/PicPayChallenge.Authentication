@@ -1,10 +1,4 @@
 ﻿using PicPayChallenge.Common.Exceptions;
-using PicPayChallenge.Common.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PicPayChallenge.Common.Validators
 {

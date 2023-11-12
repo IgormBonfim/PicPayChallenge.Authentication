@@ -1,10 +1,5 @@
 ﻿using PicPayChallenge.Common.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Collections.Specialized.BitVector32;
+using PicPayChallenge.Common.Responses;
 
 namespace PicPayChallenge.Common.Repositories.Interfaces
 {
@@ -15,5 +10,7 @@ namespace PicPayChallenge.Common.Repositories.Interfaces
         T Update(T entity);
         void Delete(T entity);
         IQueryable<T> Query();
+        Pagination<T> ListPaginated(IQueryable<T> query, int itemsPerPage, int page);
+        IEnumerable<T> List(IQueryable<T> query);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using NHibernate;
 using PicPayChallenge.Common.Entities;
 using PicPayChallenge.Common.Repositories.Interfaces;
+using PicPayChallenge.Common.Responses;
 
 namespace PicPayChallenge.Common.Repositories
 {
@@ -42,5 +43,28 @@ namespace PicPayChallenge.Common.Repositories
             return session.Query<T>();
         }
 
+        public IEnumerable<T> List(IQueryable<T> query) 
+        {
+            return query.ToList();
+        }
+
+        public Pagination<T> ListPaginated(IQueryable<T> query, int itemsPerPage, int page)
+        {
+            int offset = (page * itemsPerPage) - itemsPerPage;
+            query = query.Take(itemsPerPage).Skip(offset);
+            IEnumerable<T> records = List(query);
+
+            int totalItems = records.Count();
+            int totalPages = (int)Math.Ceiling((double)totalItems / itemsPerPage);
+
+            return new Pagination<T>
+            {
+                ItemsPerPage = itemsPerPage,
+                TotalItems = totalItems,
+                TotalPages = totalPages,
+                Page = page,
+                Records = records,
+            };
+        }
     }
 }
